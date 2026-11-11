@@ -1,47 +1,33 @@
-# UPSC 2027 Personal Study Planner
+# UPSC 2027 Test-Driven Study Planner
 
-A static, mobile-friendly UPSC study planner designed for GitHub Pages.
+Updated test schedule:
+- 1 January–24 April 2027: tests every alternate day.
+- The alternate-day schedule includes two timed tests each for GS Paper I, GS Paper II, GS Paper III and GS Paper IV, interleaved with Prelims GS and CSAT practice.
+- 25 April–20 May 2027: a Prelims-focused test/practice paper every day.
+- 25 May–19 August 2027: a Mains paper or timed answer-writing session every day, rotating GS I–IV, Essay, Chemistry Optional Papers I and II, and GS answer-writing drills.
+
+## Publish the updated app on GitHub Pages
+
+1. Download and extract this ZIP.
+2. Open your repository: `Manmohan1225/upsc-2027-study-planner`.
+3. Upload/replace the files at the repository root: `index.html`, `manifest.webmanifest`, `sw.js`, `icon.svg`, `.nojekyll`, and `README.md`.
+4. Commit the changes to the `main` branch.
+5. GitHub Pages will redeploy automatically. Open:
+   `https://manmohan1225.github.io/upsc-2027-study-planner/`
+6. If the old version remains visible, refresh the page. If installed as a PWA, close it and reopen after the service worker updates.
 
 ## Features
+- Daily 9-hour checklist.
+- Dated study roadmap.
+- GS and Chemistry Optional topic checklist.
+- Filterable test calendar.
+- Test completion marks.
+- Test score and mistake log.
+- Browser-local progress storage.
+- PWA manifest and offline app-shell caching.
 
-- Dated preparation roadmap from November 2026 through the planned Mains preparation period.
-- Daily 9-hour study checklist.
-- GS and Chemistry Optional topic tracker.
-- January-onward test calendar.
-- Test marks and mistake notes.
-- Browser-local progress saving using `localStorage`.
-- PWA manifest and service worker for installability and offline app-shell access.
+## Data
+Progress is stored in browser localStorage on the device. It does not sync between devices. Export or separately record important scores and notes.
 
-## Publish on GitHub Pages
-
-1. Create a new GitHub repository, for example `upsc-2027-planner`.
-2. Upload **all files and folders in this package** to the repository's root:
-   - `index.html`
-   - `manifest.webmanifest`
-   - `sw.js`
-   - `icon.svg`
-   - `README.md`
-   - `.nojekyll`
-3. On GitHub, open **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Select branch `main` and folder `/ (root)`, then click **Save**.
-6. Wait for GitHub Pages to publish. Your URL will look like:
-   `https://YOUR-USERNAME.github.io/REPOSITORY-NAME/`
-
-## Install on Android
-
-1. Open your published GitHub Pages URL in Chrome.
-2. Open Chrome's three-dot menu.
-3. Choose **Install app** or **Add to Home screen** if offered.
-
-## Important data note
-
-Progress and test records are stored in the browser's local storage on that device. They are not synced to GitHub or other devices. Clearing browser data can erase them, so keep a separate backup of important scores and notes.
-
-## Editing the plan
-
-Edit `index.html` to change topics, dates, timetable or tests. Commit the updated file to GitHub; Pages will redeploy automatically.
-
-## Exam-date note
-
-The dates in this planner are planning assumptions based on the calendar used when it was created. Check the latest official UPSC notification/calendar for changes.
+## Exam dates
+The dates are planning targets. Verify the latest UPSC official calendar and notification; the app does not guarantee exam dates or test-series bookings.
