@@ -17,7 +17,8 @@ Updated test schedule:
 6. If the old version remains visible, refresh the page. If installed as a PWA, close it and reopen after the service worker updates.
 
 ## Features
-- Daily 9-hour checklist.
+- Exact daily timetable: 6:00–8:00 AM Chemistry; 8:30–10:00 AM new GS; 10:30 AM–12:00 PM revision; 1:00–2:00 PM current affairs; 2:00–3:00 PM MCQs/CSAT; 4:00–5:00 PM answer writing; 5:00–6:00 PM Chemistry PYQs.
+- Scheduled timed tests/papers use the 2:00–5:00 PM reserved slot on test days, replacing the usual afternoon practice blocks.
 - Dated study roadmap.
 - GS and Chemistry Optional topic checklist.
 - Filterable test calendar.
