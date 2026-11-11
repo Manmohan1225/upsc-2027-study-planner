@@ -33,7 +33,7 @@ input,textarea{width:100%;border:1px solid #ccd7e2;border-radius:9px;padding:10p
 .badge{font-size:11px;border-radius:20px;padding:3px 8px;background:#edf3f8;color:#315574}
 .tabs{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 13px}.tabs button{border:1px solid var(--line);background:#fff;padding:8px 12px;border-radius:9px;color:var(--ink)}.tabs button.active{background:var(--navy);color:#fff}
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f7f9fc}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.slot{padding:11px 12px;border:1px solid var(--line);border-radius:11px;margin:8px 0;background:#fbfcfe}.slot b{display:block;color:var(--blue);font-size:12px;margin-bottom:3px}.slot span{font-weight:650}.datepick{max-width:210px}footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
 @media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)}.grid,.two{grid-template-columns:1fr}header h1{font-size:21px}.testrow{grid-template-columns:78px 1fr auto}.testname{font-size:13px}}
 </style></head><body>
 <header><div class="wrap">
@@ -50,11 +50,13 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 </nav>
 <main>
 <section id="dashboard" class="panel active">
+<div class="card"><div class="row"><div><h2>Today's exact topic planner</h2><p class="muted">The app assigns the chapter for every study slot using the selected calendar date.</p></div><input class="datepick" id="planDate" type="date" aria-label="Choose study date" onchange="renderAutoPlan()"></div><div id="autoPlan"></div></div>
 <div class="card"><h2>Your updated test strategy</h2><p class="muted">Alternate-day tests from 1 January to 24 April, daily Prelims tests from 25 April to 20 May, then one Mains paper/practice session every day from 25 May to 19 August.</p><div class="row"><b>Topic completion</b><b id="topicPct">0%</b></div><div class="progress"><i id="topicBar"></i></div><div class="row" style="margin-top:12px"><b>Test completion</b><b id="testPct">0%</b></div><div class="progress"><i id="testBar"></i></div></div>
 <div class="grid"><div class="card"><h3>Today's study checklist</h3><div id="dashDaily"></div><div class="small" id="dailySummary"></div></div><div class="card"><h3>Next scheduled test</h3><div id="nextTest"></div><p class="muted">Attempt under timed conditions. Analyse wrong answers and revise the weak topic the same day.</p></div></div>
 <div class="card"><h3>Important schedule notes</h3><ul><li>Two dedicated tests each for GS I, GS II, GS III and GS IV are included during the alternate-day phase.</li><li>Prelims practice becomes daily from 25 April through 20 May.</li><li>Mains rotation includes GS I–IV, Essay, Chemistry Optional I and II, and answer-writing drills.</li><li>25 May–19 August has a scheduled paper or timed writing session every day.</li></ul></div>
 </section>
 <section id="routine" class="panel">
+<div class="card"><div class="row"><div><h2>Exact subject and chapter for this date</h2><p class="muted">Change the date to preview another day's assigned topics.</p></div><input class="datepick" id="routineDate" type="date" aria-label="Choose routine date" onchange="syncPlanDate(this.value)"></div><div id="routineAutoPlan"></div></div>
 <div class="card"><h2>Daily 9-hour timetable – exact study times</h2><p class="muted">Follow these fixed clock times. Total focused study is 9 hours; breaks and lunch are outside the 9 hours.</p><table><tr><th>Time</th><th>Subject / task</th></tr><tr><td><b>6:00–8:00 AM</b></td><td>Chemistry Optional – core concepts</td></tr><tr><td><b>8:00–8:30 AM</b></td><td>Breakfast / break</td></tr><tr><td><b>8:30–10:00 AM</b></td><td>New GS topic (rotate GS I–IV)</td></tr><tr><td><b>10:00–10:30 AM</b></td><td>Break</td></tr><tr><td><b>10:30 AM–12:00 PM</b></td><td>Revision of completed GS subjects / current topic</td></tr><tr><td><b>12:00–1:00 PM</b></td><td>Lunch / rest</td></tr><tr><td><b>1:00–2:00 PM</b></td><td>Current Affairs + notes</td></tr><tr><td><b>2:00–3:00 PM</b></td><td>Prelims MCQs / CSAT (unless this is a scheduled test day)</td></tr><tr><td><b>3:00–4:00 PM</b></td><td>Break / walk</td></tr><tr><td><b>4:00–5:00 PM</b></td><td>Mains answer writing (unless this is a scheduled test day)</td></tr><tr><td><b>5:00–6:00 PM</b></td><td>Chemistry Optional PYQs / numerical practice</td></tr></table><div id="dailyList"></div><div class="row"><b id="hoursTotal">0 / 9 hours checked</b><button class="action secondary" onclick="resetDaily()">Reset today's checklist</button></div></div><div class="card"><h3>Fixed test time on scheduled test days</h3><p><b>2:00–5:00 PM:</b> Sit the scheduled timed test/paper. This replaces the 2:00–3:00 MCQ block, 4:00–5:00 answer-writing block and 5:00–6:00 Chemistry practice block on that day. Keep the daily total at 9 focused hours. Analyse the paper during the next revision block.</p></div></section>
 <section id="roadmap" class="panel"><div class="card"><h2>Dated preparation roadmap</h2><div id="phases"></div></div></section>
 <section id="topics" class="panel"><div class="card"><h2>Subject-wise topic tracker</h2><p class="muted">Tick only after studying, practising PYQs and revising the topic.</p><div class="row"><b>Completion</b><b id="topicPct2">0%</b></div><div class="progress"><i id="topicBar2"></i></div></div><div id="subjectTopics"></div></section>
@@ -108,7 +110,100 @@ function toggleTest(id,on){let a=get("tests",[]);a=on?[...new Set([...a,id])]:a.
 function saveScore(){let name=document.getElementById("sName").value.trim(),date=document.getElementById("sDate").value,got=Number(document.getElementById("sGot").value),max=Number(document.getElementById("sMax").value),notes=document.getElementById("sNotes").value.trim();if(!name||!date||!max||got<0||max<1){alert("Please enter a test name, date and valid marks.");return}let a=get("scores",[]);a.unshift({name,date,got,max,notes});put("scores",a);["sName","sDate","sGot","sMax","sNotes"].forEach(id=>document.getElementById(id).value="");renderScores()}
 function renderScores(){let a=get("scores",[]);document.getElementById("records").innerHTML=a.length?a.map((s,i)=>`<div class="phase"><div class="row"><b>${esc(s.name)}</b><button class="action secondary" onclick="delScore(${i})">Delete</button></div>${s.date} · <b>${s.got}/${s.max} (${(s.got/s.max*100).toFixed(1)}%)</b><p class="small">${esc(s.notes||"No notes")}</p></div>`).join(""):"No test results recorded yet."}
 function delScore(i){let a=get("scores",[]);a.splice(i,1);put("scores",a);renderScores()}
-function renderAll(){renderDaily();renderPhases();renderTopics();renderTests();renderScores();let topics=get("topics",{}),n=Object.keys(topics).length,total=Object.values(subjects).reduce((a,x)=>a+x.length,0),td=get("tests",[]),tests=allTests().length,p=Math.round(n/total*100),tp=Math.round(td.length/tests*100);document.getElementById("doneTopics").textContent=`${n}/${total}`;document.getElementById("topicPct").textContent=p+"%";document.getElementById("topicBar").style.width=p+"%";document.getElementById("topicPct2").textContent=p+"%";document.getElementById("topicBar2").style.width=p+"%";document.getElementById("doneTests").textContent=`${td.length}/${tests}`;document.getElementById("testPct").textContent=tp+"%";document.getElementById("testBar").style.width=tp+"%";let next=allTests().find(t=>!td.includes(t.id));document.getElementById("nextTest").innerHTML=next?`<b>${new Date(next.date+"T12:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</b><p>${esc(next.name)}</p><span class="badge">${esc(next.kind)} · 2:00–5:00 PM</span>`:"All tests marked complete."}
+
+const topicWindows=[
+["2026-11-11","2026-11-13","Environment","Ecosystem, food chains and food webs","Atomic structure and quantum numbers"],
+["2026-11-14","2026-11-16","Environment","Biodiversity and conservation","Quantum chemistry and wave functions"],
+["2026-11-17","2026-11-19","Environment","National parks, sanctuaries and biosphere reserves","Chemical bonding and ionic bonding"],
+["2026-11-20","2026-11-22","Environment","Climate change and international conventions","Covalent bonding and molecular orbital theory"],
+["2026-11-23","2026-11-25","Environment","Pollution and environmental legislation","Thermodynamics: first law and enthalpy"],
+["2026-11-26","2026-11-28","History revision","Ancient and Medieval History revision + PYQs","Thermodynamics: entropy and free energy"],
+["2026-11-29","2026-12-02","Polity","Constitution, Preamble and basic structure","Phase equilibria"],
+["2026-12-03","2026-12-06","Polity","Parliament, committees and legislative procedure","Phase diagrams and components"],
+["2026-12-07","2026-12-10","Polity","President, Prime Minister and Council of Ministers","Solutions and concentration terms"],
+["2026-12-11","2026-12-13","Polity","Supreme Court, High Courts and judicial review","Colligative properties"],
+["2026-12-14","2026-12-17","Polity","Federalism and Centre–State relations","Electrochemical cells and Nernst equation"],
+["2026-12-18","2026-12-20","Polity","Constitutional and statutory bodies","Conductance and electrolysis"],
+["2026-12-21","2026-12-24","Economy","Agriculture, irrigation, MSP and PDS","Chemical kinetics and rate laws"],
+["2026-12-25","2026-12-27","Economy","Food security and infrastructure","Reaction order and activation energy"],
+["2026-12-28","2026-12-31","Governance","Governance, transparency and accountability","Solid state and crystal structures"],
+["2027-01-01","2027-01-04","Governance","Constitutional and statutory bodies","Group theory and symmetry basics"],
+["2027-01-05","2027-01-08","Governance","E-governance, citizen charters and accountability","Main-group chemistry: periodic trends"],
+["2027-01-09","2027-01-12","Social Justice","Welfare schemes and vulnerable sections","Main-group chemistry: representative elements"],
+["2027-01-13","2027-01-16","Social Justice","NGOs, SHGs and civil society","Transition elements: properties and trends"],
+["2027-01-17","2027-01-20","International Relations","India and neighbouring countries","Transition elements: compounds and reactions"],
+["2027-01-21","2027-01-24","International Relations","International organisations and institutions","Coordination chemistry: nomenclature and bonding"],
+["2027-01-25","2027-01-28","International Relations","India's foreign policy and strategic relations","Coordination chemistry: isomerism and stability"],
+["2027-01-29","2027-02-01","Society","Social issues and government schemes","Organometallic chemistry"],
+["2027-02-02","2027-02-04","Internal Security","Internal security fundamentals","Bioinorganic chemistry"],
+["2027-02-05","2027-02-08","Internal Security","Cybersecurity and border management","Nuclear chemistry and radioactivity"],
+["2027-02-09","2027-02-12","Internal Security","Money laundering and terrorism","Organic chemistry: structure and acidity/basicity"],
+["2027-02-13","2027-02-16","Disaster Management","Disaster management cycle and mitigation","Organic reaction mechanisms"],
+["2027-02-17","2027-02-20","Ethics","Ethics, values and human behaviour","Stereochemistry and conformations"],
+["2027-02-21","2027-02-24","Ethics","Attitude and emotional intelligence","Aliphatic compounds"],
+["2027-02-25","2027-02-28","Ethics","Probity and public service ethics","Aromatic compounds and electrophilic substitution"],
+["2027-03-01","2027-03-04","Economy","Agriculture and food processing","Stereochemistry: optical and geometrical isomerism"],
+["2027-03-05","2027-03-08","Economy","Banking, inflation and monetary policy","Aliphatic reaction pathways"],
+["2027-03-09","2027-03-12","Science & Technology","Biotechnology and applications","Aromatic reaction mechanisms"],
+["2027-03-13","2027-03-16","Science & Technology","Space, nuclear technology and IT","Heterocyclic chemistry"],
+["2027-03-17","2027-03-20","Environment revision","Environment, ecology and climate change revision","Biomolecules"],
+["2027-03-21","2027-03-24","Geography revision","Geography, mapping and physical processes","Natural products"],
+["2027-03-25","2027-03-28","History revision","Modern History and Art & Culture revision","Organic spectroscopy"],
+["2027-03-29","2027-03-31","Polity & Economy revision","Polity and Economy revision + PYQs","Organic synthesis"],
+["2027-04-01","2027-04-05","Prelims revision","History and Art & Culture: short notes + PYQs","Chemistry Optional PYQs"],
+["2027-04-06","2027-04-10","Prelims revision","Polity and Governance: short notes + PYQs","Chemistry weak-topic practice"],
+["2027-04-11","2027-04-15","Prelims revision","Geography and mapping: maps + PYQs","Chemistry formula and reaction revision"],
+["2027-04-16","2027-04-20","Prelims revision","Economy: concepts, budget and banking PYQs","Chemistry Optional maintenance"],
+["2027-04-21","2027-04-25","Prelims revision","Environment and Science: facts + PYQs","Chemistry Optional maintenance"],
+["2027-04-26","2027-05-20","Prelims intensive","Daily mock, CSAT, current affairs and error notebook","Optional maintenance only; no new major chapters"],
+["2027-05-25","2027-06-20","Mains restart","GS I/II, Essay and Mains answer-writing topics","Complete remaining Chemistry Paper I and II gaps"],
+["2027-06-21","2027-07-18","Mains intensive","GS III/IV, Ethics case studies and Essay","Chemistry Paper I/II revision and PYQs"],
+["2027-07-19","2027-08-19","Mains simulation","Full-length GS papers, Essay and final revision","Full-length Chemistry Optional papers"]
+];
+const revisionRotation=[
+["Monday","History: Modern India + timeline/PYQs"],
+["Tuesday","Indian Polity: Constitution, Parliament and bodies"],
+["Wednesday","Geography: maps, physical and Indian geography"],
+["Thursday","Economy: concepts, budget, banking and schemes"],
+["Friday","Art & Culture: architecture, paintings, literature"],
+["Saturday","Weakest completed GS subject + error notebook"],
+["Sunday","Weekly cumulative revision and test analysis"]
+];
+function dateOnly(v){return new Date(v+"T12:00:00")}
+function dayDiff(a,b){return Math.floor((dateOnly(a)-dateOnly(b))/86400000)}
+function topicForDate(v){
+ let win=topicWindows.find(w=>v>=w[0]&&v<=w[1]);
+ if(!win){
+   if(v<"2026-11-11")return {gs:"Date is before this planner's start. Review your baseline and pending chapters.",chem:"Set up Chemistry Optional baseline."};
+   if(v>="2027-05-21"&&v<="2027-05-24")return {gs:"Prelims buffer: light revision, rest and exam logistics.",chem:"Pause new Optional topics."};
+   if(v>="2027-05-25"&&v<="2027-06-20")return {gs:"Mains GS I/II, Essay and answer-writing practice.",chem:"Close remaining Chemistry Paper I and II gaps."};
+   if(v>="2027-06-21"&&v<="2027-07-18")return {gs:"GS III/IV, Ethics case studies and Essay.",chem:"Chemistry Optional revision and PYQs."};
+   if(v>="2027-07-19"&&v<="2027-08-19")return {gs:"Full-length GS papers, Essay and final revision.",chem:"Full-length Chemistry Optional papers."};
+   if(v>"2027-08-19")return {gs:"Mains exam period / follow official UPSC schedule.",chem:"Follow official exam schedule."};
+   return {gs:"Use this day for backlog clearance and PYQs.",chem:"Chemistry Optional backlog and revision."};
+ }
+ return {gs:win[3],chem:win[4],label:win[2]};
+}
+function renderAutoPlan(){
+ const v=document.getElementById("planDate").value||today();
+ document.getElementById("routineDate").value=v;
+ const info=topicForDate(v);
+ const dt=dateOnly(v).toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+ const test=allTests().find(t=>t.date===v);
+ const rev=revisionRotation[dateOnly(v).getDay()===0?6:dateOnly(v).getDay()-1][1];
+ let testHtml=test?`<div class="slot"><b>2:00–5:00 PM · SCHEDULED TEST</b><span>${esc(test.name)}</span><div class="small">${esc(test.kind)}. This replaces the normal afternoon practice blocks.</div></div>`:`<div class="slot"><b>2:00–3:00 PM · PRELIMS PRACTICE</b><span>30–40 MCQs or CSAT practice</span></div><div class="slot"><b>4:00–5:00 PM · MAINS PRACTICE</b><span>Write two answers and self-evaluate</span></div>`;
+ const out=`<p><b>${dt}</b></p>
+ <div class="slot"><b>6:00–8:00 AM · CHEMISTRY OPTIONAL</b><span>${esc(info.chem)}</span></div>
+ <div class="slot"><b>8:30–10:00 AM · NEW GS TOPIC</b><span>${esc(info.gs)}</span></div>
+ <div class="slot"><b>10:30 AM–12:00 PM · REVISION</b><span>${esc(rev)}</span></div>
+ <div class="slot"><b>1:00–2:00 PM · CURRENT AFFAIRS</b><span>Read newspaper, make issue-based notes, link to GS syllabus.</span></div>
+ ${testHtml}
+ ${test?`<div class="slot"><b>5:00–6:00 PM · TEST REVIEW</b><span>Use the final hour of the reserved test block to log errors and mark weak topics; do not add another study hour.</span></div>`:`<div class="slot"><b>5:00–6:00 PM · CHEMISTRY PYQs / PRACTICE</b><span>Numericals, reactions, previous-year questions or correction of mistakes.</span></div>`}`;
+ document.getElementById("autoPlan").innerHTML=out;
+ document.getElementById("routineAutoPlan").innerHTML=out;
+}
+function syncPlanDate(v){document.getElementById("planDate").value=v;renderAutoPlan()}
+function renderAll(){if(!document.getElementById("planDate").value){document.getElementById("planDate").value=today();document.getElementById("routineDate").value=today();}renderAutoPlan();renderDaily();renderPhases();renderTopics();renderTests();renderScores();let topics=get("topics",{}),n=Object.keys(topics).length,total=Object.values(subjects).reduce((a,x)=>a+x.length,0),td=get("tests",[]),tests=allTests().length,p=Math.round(n/total*100),tp=Math.round(td.length/tests*100);document.getElementById("doneTopics").textContent=`${n}/${total}`;document.getElementById("topicPct").textContent=p+"%";document.getElementById("topicBar").style.width=p+"%";document.getElementById("topicPct2").textContent=p+"%";document.getElementById("topicBar2").style.width=p+"%";document.getElementById("doneTests").textContent=`${td.length}/${tests}`;document.getElementById("testPct").textContent=tp+"%";document.getElementById("testBar").style.width=tp+"%";let next=allTests().find(t=>!td.includes(t.id));document.getElementById("nextTest").innerHTML=next?`<b>${new Date(next.date+"T12:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</b><p>${esc(next.name)}</p><span class="badge">${esc(next.kind)} · 2:00–5:00 PM</span>`:"All tests marked complete."}
 document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.tab).classList.add("active")}));
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.filter;renderTests()}));
 renderAll();
