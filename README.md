@@ -56,3 +56,9 @@ The Dashboard and Daily Routine now show the chapter/topic assigned to each exac
 
 ## Evening slot update
 The flexible catch-up and revision slot is now 7:00–9:00 PM. Use 7:00–8:00 PM for active recall and 8:00–9:00 PM for today's GS topic, 20 PYQs and error-notebook updates when no carryover tasks are pending.
+
+
+V15 FINAL UPDATE: Chemistry Optional first syllabus coverage is scheduled through 25 March 2027. From 26 March onward, the app assigns a structured Paper I and Paper II revision cycle (26 March–20 May), followed by continued sectional revision and full-length Optional papers through the Mains preparation period. Alternate 7–9 PM evenings switch from new-chapter sprint to Chemistry revision after 25 March.
+
+
+V16 FINAL: The daily dated plan now uses the detailed UPSC Chemistry syllabus blocks from 11 Nov 2026 through 25 Mar 2027. The Chemistry tracker contains 67 line-item subtopics covering all sections of Paper I and Paper II. From 26 Mar 2027 the daily topic assignment switches to a topic-wise revision cycle, then sectional tests and full-length Paper I/II practice. The official syllabus reference used is the UPSC Civil Services Examination 2025 notice, Chemistry syllabus pages 49–51; confirm against the 2027 notice when published.
