@@ -78,7 +78,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
  <div class="card"><h2>Smart revision calendar</h2><p class="muted">When you complete a topic in the Topic tracker, its 1-day, 7-day and 21-day revision dates are generated automatically. Mark each revision as done.</p><div id="revisionList"></div></div>
 </section>
 <section id="chemistry" class="panel">
- <div class="card"><h2>Chemistry Optional chapter tracker</h2><p class="muted">Track preparation separately. Mark a chapter complete only after concepts, notes and PYQs are covered.</p><div class="slot"><b>CHEMISTRY OPTIONAL DEADLINE · 25 MARCH 2027</b><span>Study Chemistry 6:00–8:00 AM daily. Also use 7:00–9:00 PM on alternate days for deep study, PYQs and backlog clearance. Aim to finish first syllabus coverage by 25 March, then shift to revision and full-length papers.</span></div><div class="row"><b id="chemPct">0%</b><span class="tag">Paper I + Paper II</span></div><div class="progress"><i id="chemBar"></i></div><div id="chemList"></div></div>
+ <div class="card"><h2>Chemistry Optional chapter tracker</h2><p class="muted">Track preparation separately. Mark a chapter complete only after concepts, notes and PYQs are covered.</p><div class="slot"><b>CHEMISTRY OPTIONAL DEADLINE · 25 MARCH 2027</b><span>Study Chemistry 6:00–8:00 AM daily. Also use 7:00–9:00 PM on alternate days for deep study, PYQs and backlog clearance. The dated Chemistry plan now covers the listed Paper I and Paper II areas by 25 March 2027. Use 6–8 AM for concepts, 5–6 PM for PYQs/practice, and alternate 7–9 PM sessions for backlog and difficult chapters. From 26 March, shift to revision, topic tests and full-length papers. This is a first-coverage target, not a guarantee of mastery.</span></div><div class="row"><b id="chemPct">0%</b><span class="tag">Paper I + Paper II</span></div><div class="progress"><i id="chemBar"></i></div><div id="chemList"></div></div>
 </section>
 <section id="performance" class="panel">
  <div class="card"><h2>Test performance log</h2><p class="muted">Enter your test result after every test. Accuracy is calculated as correct answers divided by attempted questions.</p>
@@ -111,7 +111,7 @@ const subjects={
 "Chemistry Optional":["Atomic structure and quantum chemistry","Chemical bonding","Thermodynamics","Phase equilibria","Solutions and colligative properties","Electrochemistry","Chemical kinetics","Solid state","Spectroscopy","Group theory and symmetry","Main-group elements","Transition elements","Coordination chemistry","Organometallic chemistry","Bioinorganic chemistry","Nuclear chemistry","Organic fundamentals and reaction mechanisms","Stereochemistry","Aliphatic compounds","Aromatic compounds","Heterocyclic compounds","Organic spectroscopy","Biomolecules and natural products","Organic synthesis and remaining specialised syllabus"],
 "Prelims & CSAT":["CSAT comprehension","CSAT reasoning and analytical ability","CSAT numeracy and data interpretation","Current affairs","Government schemes and reports","Environment PYQs and MCQs","Polity PYQs and MCQs","History PYQs and MCQs","Geography PYQs and MCQs","Economy PYQs and MCQs","Full-length GS mock practice"]
 };
-const daily=[["6:00–8:00 AM · Chemistry Optional – core study",2],["8:30–10:00 AM · New GS topic",1.5],["10:30 AM–12:00 PM · GS revision",1.5],["1:00–2:00 PM · Current Affairs",1],["2:00–3:00 PM · Prelims MCQs / CSAT (non-test days)",1],["4:00–5:00 PM · Mains answer writing (non-test days)",1],["5:00–6:00 PM · Chemistry PYQs / practice",1],["7:00–9:00 PM · Flexible catch-up: pending tasks first, then GS revision + PYQs",2]];
+const daily=[["6:00–8:00 AM · Chemistry Optional – core study",2],["8:30–10:00 AM · New GS topic",1.5],["10:30 AM–12:00 PM · GS revision",1.5],["1:00–2:00 PM · Current Affairs",1],["2:00–3:00 PM · Prelims MCQs / CSAT (non-test days)",1],["4:00–5:00 PM · Mains answer writing (non-test days)",1],["5:00–6:00 PM · Chemistry PYQs / practice",1],["7:00–9:00 PM · Alternate-day Chemistry Optional sprint until 25 March; otherwise GS catch-up",2]];
 const KEY="upsc27v2_";
 function get(k,d){try{return JSON.parse(localStorage.getItem(KEY+k))??d}catch(e){return d}}
 function put(k,v){localStorage.setItem(KEY+k,JSON.stringify(v))}
@@ -254,6 +254,45 @@ function chooseUnit(map,key,v,fallback){
  const list=map[key]||map[Object.keys(map).find(k=>key.toLowerCase().includes(k.toLowerCase()))]||[fallback];
  return list[Math.abs(dayDiff(v,"2026-11-11"))%list.length];
 }
+const chemistryDeadlinePlan=[
+"Physical: atomic structure, quantum numbers and wave functions",
+"Physical: chemical bonding, molecular orbital theory and bond properties",
+"Physical: group theory, symmetry operations, point groups and applications",
+"Physical: thermodynamics I — laws, enthalpy, heat capacities and thermochemistry",
+"Physical: thermodynamics II — entropy, free energy and thermodynamic relations",
+"Physical: phase equilibria, phase rule and binary systems",
+"Physical: solutions, ideal/non-ideal behaviour and colligative properties",
+"Physical: electrochemistry, Nernst equation, conductance and applications",
+"Physical: chemical kinetics, rate laws, integrated equations and activation energy",
+"Physical: solid state, crystal structures, defects and X-ray diffraction",
+"Physical: spectroscopy — rotational, vibrational and Raman methods",
+"Physical: spectroscopy — electronic, UV-visible, NMR, ESR and mass spectrometry",
+"Inorganic: periodicity, main-group chemistry and representative compounds",
+"Inorganic: transition elements, oxidation states, colour and magnetism",
+"Inorganic: lanthanoids, actinoids and separation methods",
+"Inorganic: coordination chemistry — nomenclature, isomerism and bonding",
+"Inorganic: crystal field theory, stability and reaction mechanisms",
+"Inorganic: organometallic compounds, bonding and catalytic cycles",
+"Inorganic: bioinorganic chemistry, metalloproteins and metalloenzymes",
+"Inorganic: nuclear chemistry, radioactivity, fission and fusion",
+"Organic: electronic effects, acidity/basicity, intermediates and mechanisms",
+"Organic: substitution, elimination, addition and rearrangement reactions",
+"Organic: stereochemistry, chirality, R/S, E/Z and conformations",
+"Organic: aromaticity and electrophilic/nucleophilic aromatic substitution",
+"Organic: heterocyclic chemistry and important named reactions",
+"Organic: pericyclic reactions and photochemistry",
+"Organic: biomolecules — carbohydrates, amino acids, proteins and nucleic acids",
+"Organic: natural products, isolation and structure elucidation",
+"Organic: synthesis, retrosynthesis and multi-step conversions",
+"Applied: polymers, catalysis, industrial/environmental chemistry and analytical methods"
+];
+function chemistryDeadlineTopic(v){
+ const start="2026-11-11", end="2027-03-25";
+ if(v<start)return "Chemistry syllabus mapping and diagnostic PYQs";
+ if(v>end)return "Chemistry Optional revision, PYQs and full-length papers — syllabus coverage deadline passed";
+ const d=dayDiff(v,start), idx=Math.min(chemistryDeadlinePlan.length-1,Math.floor(d*chemistryDeadlinePlan.length/(dayDiff(end,start)+1)));
+ return chemistryDeadlinePlan[idx]+"; make concise notes and solve topic-wise PYQs";
+}
 function topicForDate(v){
  let win=topicWindows.find(w=>v>=w[0]&&v<=w[1]);
  if(!win){
@@ -267,7 +306,7 @@ function topicForDate(v){
  }
  const gs=chooseUnit(gsDailyUnits,win[2],v,win[3]);
  const chemText=win[4].toLowerCase(); const chemKey=Object.keys(chemDailyUnits).find(k=>chemText.includes(k.toLowerCase())) || (chemText.includes("bond")?"Chemical bonding":chemText.includes("quantum")?"Atomic structure":chemText.includes("spect")?"Spectroscopy":chemText.includes("kinetic")?"Chemical kinetics":chemText.includes("solution")?"Solutions":chemText.includes("electro")?"Electrochemistry":chemText.includes("phase")?"Phase equilibria":chemText.includes("organic")?"Organic":"Organic");
- const chem=chooseUnit(chemDailyUnits,chemKey,v,win[4]);
+ const chem=(v<="2027-03-25")?chemistryDeadlineTopic(v):chooseUnit(chemDailyUnits,chemKey,v,win[4]);
  return {gs,chem,label:win[2]};
 }
 function revisionForDate(v){
