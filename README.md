@@ -44,6 +44,15 @@ The Dashboard and Daily Routine now show the chapter/topic assigned to each exac
 
 ## Daily study target update (v6)
 - Daily focused study target increased from 9 to 11 hours.
-- Added 6:00–8:00 PM evening revision: 6:00–7:00 PM active recall of a completed GS subject; 7:00–8:00 PM revise the day's GS topic, solve 20 PYQs and update the error notebook.
+- Added 7:00–9:00 PM evening revision: 7:00–8:00 PM active recall of a completed GS subject; 7:00–8:00 PM revise the day's GS topic, solve 20 PYQs and update the error notebook.
 - Checklist and daily/weekly/monthly study progress now use 8 study blocks and an 11-hour target.
-- On test days, use 5:00–6:00 PM for test analysis and retain 6:00–8:00 PM for evening revision.
+- On test days, use 5:00–6:00 PM for test analysis and retain 7:00–9:00 PM for evening revision.
+
+## Flexible unfinished-task carry-forward (v7)
+- When the app is opened on a new date, unfinished blocks from the previous saved study day are automatically added to a carry-forward queue.
+- The 7:00–9:00 PM slot prioritises carried-forward tasks. If pending work exceeds two hours, the app advises spreading it across following evenings rather than attempting an unrealistic overload.
+- Mark carried-forward items Done to remove them from the queue. When no tasks are pending, use 7:00–9:00 PM for GS active recall, today's topic revision, 20 PYQs and the error notebook.
+
+
+## Evening slot update
+The flexible catch-up and revision slot is now 7:00–9:00 PM. Use 7:00–8:00 PM for active recall and 8:00–9:00 PM for today's GS topic, 20 PYQs and error-notebook updates when no carryover tasks are pending.
