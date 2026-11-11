@@ -1,0 +1,19 @@
+{
+  "name": "UPSC 2027 Personal Study Planner",
+  "short_name": "UPSC 2027",
+  "description": "Topic-wise UPSC preparation planner, revision tracker and test calendar.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f6fa",
+  "theme_color": "#102b46",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
