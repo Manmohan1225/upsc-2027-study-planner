@@ -81,7 +81,7 @@ body{padding-bottom:28px!important}
 @media(min-width:700px){#sideNavigation{top:50%!important;bottom:auto!important;left:auto!important;max-width:280px!important}#sideNavToggle{top:50%}}
 @media(prefers-reduced-motion:reduce){#sideNavigation{transition:none}}
 
-</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPSC CSE 2027 · V27 CHECKLIST + TIMER UPDATE · AUTO DATE</div>
+.daily-checklist-wrap{margin-top:18px;padding-top:16px;border-top:1px solid var(--line,#e5e7eb)}#dailyList .item{display:flex;align-items:center;gap:12px;padding:13px 10px;border-bottom:1px solid var(--line,#e5e7eb);border-radius:10px}#dailyList .item input[type=checkbox]{width:22px;height:22px;flex:0 0 22px;accent-color:#173b5d}#dailyList .item label{line-height:1.45;flex:1}.daily-checklist-wrap h3{margin-bottom:6px}</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPSC CSE 2027 · V27 CHECKLIST + TIMER UPDATE · AUTO DATE</div>
 <header><div class="wrap">
 <h1>UPSC CSE 2027</h1>
 <p>Your preparation command centre · Focus on today, improve every week</p>
@@ -115,7 +115,7 @@ body{padding-bottom:28px!important}
 </section>
 <section id="routine" class="panel">
 <div class="card"><div class="row"><div><h2>Exact subject and chapter for this date</h2><p class="muted">Change the date to preview another day's assigned topics.</p></div><input class="datepick" id="routineDate" type="date" aria-label="Choose routine date" onchange="syncPlanDate(this.value)"></div><div id="routineAutoPlan"></div><div id="carryoverRoutine"></div></div>
-<div class="card"><h2>Daily 11-hour timetable – four fixed study windows</h2><p class="muted">Follow these fixed clock times. Total focused study is 11 hours; breaks and lunch are outside the 11 hours.</p><table><tr><th>Time</th><th>Subject / task</th></tr><tr><td><b>6:00–8:00 AM</b></td><td>Chemistry Optional – concepts and theory</td></tr><tr><td><b>9:00–10:30 AM</b></td><td>GS – new topic (rotate GS I–IV)</td></tr><tr><td><b>10:30 AM–12:00 PM</b></td><td>GS – revision, active recall and notes</td></tr><tr><td><b>12:00–12:30 PM</b></td><td>Current affairs – headlines and issue selection</td></tr><tr><td><b>2:00–3:00 PM</b></td><td>Current affairs – detailed notes and GS linkage</td></tr><tr><td><b>3:00–4:00 PM</b></td><td>Prelims MCQs / CSAT and answer analysis</td></tr><tr><td><b>4:00–5:30 PM</b></td><td>Mains answer writing, evaluation and improvement</td></tr><tr><td><b>7:00–9:00 PM</b></td><td>Alternate evenings: Chemistry Optional PYQs / deep revision; other evenings: GS revision, PYQs and error notebook</td></tr></table><div id="dailyList"></div><div class="row"><b id="hoursTotal">0 / 11 hours checked</b><button class="action secondary" onclick="resetDaily()">Reset today's checklist</button></div></div><div class="card"><h3>Fixed test time on scheduled test days</h3><p><b>2:00–5:30 PM:</b> Sit the scheduled timed test/paper. This replaces the normal 2:00–3:00 MCQ and 4:00–5:00 answer-writing blocks. Use 5:00–6:00 PM for test analysis; use 7:00–9:00 PM for Chemistry Optional on alternate days until 25 March; other evenings are for GS revision. Keep the daily target at 11 focused hours. The 7:00–9:00 PM flexible block remains in place after test analysis; alternate evenings are assigned to Chemistry Optional until 25 March. Analyse the paper during the next revision block.</p></div></section>
+<div class="card"><h2>Daily 11-hour timetable – four fixed study windows</h2><p class="muted">Follow these fixed clock times. Total focused study is 11 hours; breaks and lunch are outside the 11 hours.</p><table><tr><th>Time</th><th>Subject / task</th></tr><tr><td><b>6:00–8:00 AM</b></td><td>Chemistry Optional – concepts and theory</td></tr><tr><td><b>9:00–10:30 AM</b></td><td>GS – new topic (rotate GS I–IV)</td></tr><tr><td><b>10:30 AM–12:00 PM</b></td><td>GS – revision, active recall and notes</td></tr><tr><td><b>12:00–12:30 PM</b></td><td>Current affairs – headlines and issue selection</td></tr><tr><td><b>2:00–3:00 PM</b></td><td>Current affairs – detailed notes and GS linkage</td></tr><tr><td><b>3:00–4:00 PM</b></td><td>Prelims MCQs / CSAT and answer analysis</td></tr><tr><td><b>4:00–5:30 PM</b></td><td>Mains answer writing, evaluation and improvement</td></tr><tr><td><b>7:00–9:00 PM</b></td><td>Alternate evenings: Chemistry Optional PYQs / deep revision; other evenings: GS revision, PYQs and error notebook</td></tr></table><div class="daily-checklist-wrap"><h3>Today's routine checklist</h3><p class="muted">Tick each study block after completing it. Your checked hours are saved on this device.</p><div id="dailyList"></div></div><div class="row"><b id="hoursTotal">0 / 11 hours checked</b><button class="action secondary" onclick="resetDaily()">Reset today's checklist</button></div></div><div class="card"><h3>Fixed test time on scheduled test days</h3><p><b>2:00–5:30 PM:</b> Sit the scheduled timed test/paper. This replaces the normal 2:00–3:00 MCQ and 4:00–5:00 answer-writing blocks. Use 5:00–6:00 PM for test analysis; use 7:00–9:00 PM for Chemistry Optional on alternate days until 25 March; other evenings are for GS revision. Keep the daily target at 11 focused hours. The 7:00–9:00 PM flexible block remains in place after test analysis; alternate evenings are assigned to Chemistry Optional until 25 March. Analyse the paper during the next revision block.</p></div></section>
 <section id="roadmap" class="panel"><div class="card"><h2>Dated preparation roadmap</h2><div id="phases"></div></div></section>
 <section id="topics" class="panel"><div class="card"><h2>Subject-wise topic tracker</h2><p class="muted">Tick only after studying, practising PYQs and revising the topic.</p><div class="row"><b>Completion</b><b id="topicPct2">0%</b></div><div class="progress"><i id="topicBar2"></i></div></div><div id="subjectTopics"></div></section>
 <section id="calendar" class="panel">
@@ -213,8 +213,8 @@ function carryoverMarkup(){
 function finishCarryover(id){put("carryoverTasks",carryoverTasks().filter(x=>x.id!==id));renderAll()}
 function dayState(){ensureCarryovers();return get("daily",{date:today(),done:[]})}
 function renderDaily(){let s=dayState(),h=s.done.reduce((n,i)=>n+daily[i][1],0),out=daily.map((t,i)=>`<div class="item"><input type="checkbox" ${s.done.includes(i)?"checked":""} onchange="toggleDaily(${i},this.checked)"><label>${t[0]} <span class="tag">${t[1]}h</span></label></div>`).join("");document.getElementById("dailyList").innerHTML=out;document.getElementById("dashDaily").innerHTML=out;document.getElementById("hoursTotal").textContent=`${h} / 11 hours checked`;document.getElementById("dailySummary").textContent=`${s.done.length}/8 study blocks completed`}
-function toggleDaily(i,on){let s=dayState();s.done=on?[...new Set([...s.done,i])]:s.done.filter(x=>x!==i);put("daily",s);let h=get("dailyHistory",{});h[s.date]=s.done;put("dailyHistory",h);renderAll()}
-function resetDaily(){put("daily",{date:today(),done:[]});let h=get("dailyHistory",{});h[today()]=[];put("dailyHistory",h);renderAll()}
+function toggleDaily(i,on){let s=dayState();s.done=on?[...new Set([...s.done,i])]:s.done.filter(x=>x!==i);put("daily",s);let h=get("dailyHistory",{});h[s.date]=s.done;put("dailyHistory",h);renderDaily()}
+function resetDaily(){put("daily",{date:today(),done:[]});let h=get("dailyHistory",{});h[today()]=[];put("dailyHistory",h);renderDaily()}
 function renderPhases(){let done=get("phases",[]);document.getElementById("phases").innerHTML=phases.map((p,i)=>`<div class="phase"><div class="row"><b>${p[1]}</b><label class="small"><input type="checkbox" ${done.includes(i)?"checked":""} onchange="togglePhase(${i},this.checked)"> Complete</label></div><span class="badge">${p[0]}</span><p><b>GS:</b> ${p[2]}</p><p><b>Chemistry:</b> ${p[3]}</p></div>`).join("")}
 function togglePhase(i,on){let a=get("phases",[]);a=on?[...new Set([...a,i])]:a.filter(x=>x!==i);put("phases",a);renderAll()}
 function renderTopics(){
@@ -587,6 +587,7 @@ function refreshForLocalDate(force=false){
   document.getElementById("planDate").value=current;
   document.getElementById("routineDate").value=current;
   ensureCarryovers();
+  renderDaily();
   renderAll();
  }
 }
@@ -601,10 +602,12 @@ function refreshForLocalDate(force=false){
   document.getElementById("planDate").value=current;
   document.getElementById("routineDate").value=current;
   ensureCarryovers();
+  renderDaily();
   renderAll();
  }
 }
 document.getElementById("scoreDate").value=today();document.getElementById("pyqDate").value=today();document.getElementById("answerDate").value=today();
+try{renderDaily()}catch(e){console.error("Daily routine checklist render failed",e);document.getElementById("dailyList").innerHTML="<p class=muted>Daily checklist could not load. Reload the page.</p>"}
 // Render the checklists before the broader dashboard initialization. This keeps
 // the topic and Chemistry checkboxes visible even if an unrelated widget fails.
 try{renderTopics()}catch(e){console.error("Topic checklist render failed",e);document.getElementById("subjectTopics").innerHTML='<p class="muted">Topic checklist could not load. Reload the page or contact support.</p>'}
