@@ -538,6 +538,8 @@ function importBackup(){
 }
 
 function switchTab(id){document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.tab===id)});document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='productivity'){renderMistakes();renderBacklog();renderWeeklyReviewProductivity()}}
+// V25 fix: connect every side-menu item to its matching content panel.
+document.querySelectorAll('nav button[data-tab]').forEach(button=>{button.addEventListener('click',()=>switchTab(button.dataset.tab));});
 let focusTick=null;
 function focusState(){return get('focusState',{running:false,startedAt:0,elapsed:0,label:'',target:50})}
 function focusElapsed(s){return s.elapsed+(s.running?Math.max(0,Math.floor((Date.now()-s.startedAt)/1000)):0)}
