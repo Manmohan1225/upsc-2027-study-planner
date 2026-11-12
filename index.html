@@ -81,7 +81,7 @@ body{padding-bottom:28px!important}
 @media(min-width:700px){#sideNavigation{top:50%!important;bottom:auto!important;left:auto!important;max-width:280px!important}#sideNavToggle{top:50%}}
 @media(prefers-reduced-motion:reduce){#sideNavigation{transition:none}}
 
-</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPSC CSE 2027 · V22 SIDE MENU COMMAND CENTRE · AUTO DATE</div>
+</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPSC CSE 2027 · V27 CHECKLIST + TIMER UPDATE · AUTO DATE</div>
 <header><div class="wrap">
 <h1>UPSC CSE 2027</h1>
 <p>Your preparation command centre · Focus on today, improve every week</p>
@@ -547,7 +547,7 @@ function importBackup(){
  const f=document.getElementById('backupFile').files[0];if(!f){alert('Choose a backup JSON file first.');return}const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.data||typeof x.data!=='object')throw new Error('Invalid backup');let count=0;Object.entries(x.data).forEach(([k,v])=>{if(k.startsWith(KEY)&&typeof v==='string'){localStorage.setItem(k,v);count++}});renderAll();loadDailyTools();renderPYQ();renderAnswerReviews();renderWeeklyReview();document.getElementById('backupStatus').textContent='Restored '+count+' planner records. Your app has refreshed.';}catch(e){alert('Could not read this backup. Please select a JSON backup exported from this planner.')}};r.readAsText(f);
 }
 
-function switchTab(id){document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.tab===id)});document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='productivity'){renderMistakes();renderBacklog();renderWeeklyReviewProductivity()}}
+function switchTab(id){document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.tab===id)});document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='topics'){renderTopics()}if(id==='chemistry'){renderChem()}if(id==='productivity'){renderMistakes();renderBacklog();renderWeeklyReviewProductivity()}}
 // V25 fix: connect every side-menu item to its matching content panel.
 document.querySelectorAll('nav button[data-tab]').forEach(button=>{button.addEventListener('click',()=>switchTab(button.dataset.tab));});
 let focusTick=null;
@@ -605,12 +605,12 @@ function refreshForLocalDate(force=false){
  }
 }
 document.getElementById("scoreDate").value=today();document.getElementById("pyqDate").value=today();document.getElementById("answerDate").value=today();
-refreshForLocalDate(true);
-// Defensive first paint: always render the subject/topic and Chemistry checklists.
-// These calls are isolated so one unrelated dashboard widget cannot hide the checkboxes.
-try{renderTopics()}catch(e){console.error("Topic checklist render failed",e)}
-try{renderChem()}catch(e){console.error("Chemistry checklist render failed",e)}
+// Render the checklists before the broader dashboard initialization. This keeps
+// the topic and Chemistry checkboxes visible even if an unrelated widget fails.
+try{renderTopics()}catch(e){console.error("Topic checklist render failed",e);document.getElementById("subjectTopics").innerHTML='<p class="muted">Topic checklist could not load. Reload the page or contact support.</p>'}
+try{renderChem()}catch(e){console.error("Chemistry checklist render failed",e);document.getElementById("chemList").innerHTML='<p class="muted">Chemistry checklist could not load. Reload the page or contact support.</p>'}
 try{renderTests()}catch(e){console.error("Test schedule render failed",e)}
+try{refreshForLocalDate(true)}catch(e){console.error("Dashboard initialization issue",e)}
 window.addEventListener("focus",()=>refreshForLocalDate());
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshForLocalDate()});
 setInterval(()=>refreshForLocalDate(),30000);
