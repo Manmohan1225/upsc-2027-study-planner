@@ -35,7 +35,7 @@ input,textarea{width:100%;border:1px solid #ccd7e2;border-radius:9px;padding:10p
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f7f9fc}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.slot{padding:11px 12px;border:1px solid var(--line);border-radius:11px;margin:8px 0;background:#fbfcfe}.slot b{display:block;color:var(--blue);font-size:12px;margin-bottom:3px}.slot span{font-weight:650}.subnote{font-size:12px;color:var(--muted);margin-top:4px}.metric{border:1px solid var(--line);border-radius:11px;padding:11px;background:#fbfcfe}.metric b{font-size:20px;display:block}.metric span{font-size:12px;color:var(--muted)}.datepick{max-width:210px}footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}
 @media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)}.grid,.two{grid-template-columns:1fr}header h1{font-size:21px}.testrow{grid-template-columns:78px 1fr auto}.testname{font-size:13px}}
-</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPDATED VERSION 16 · 11 FOCUSED HOURS DAILY · EVENING REVISION 7:00–9:00 PM</div>
+</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPDATED VERSION 17 · AUTO DATE & DAILY TASK REFRESH · 11 FOCUSED HOURS</div>
 <header><div class="wrap">
 <h1>UPSC CSE 2027 – Test-Driven Planner</h1>
 <p>Topic-wise preparation · Daily tracking · Structured test series</p>
@@ -50,7 +50,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 </nav>
 <main>
 <section id="dashboard" class="panel active">
-<div class="card"><div class="row"><div><h2>Today's exact topic planner</h2><p class="muted">The app assigns the chapter for every study slot using the selected calendar date.</p></div><input class="datepick" id="planDate" type="date" aria-label="Choose study date" onchange="renderAutoPlan();renderPeriodProgress()"></div><div id="autoPlan"></div><div id="carryoverDashboard"></div></div>
+<div class="card"><div class="row"><div><h2>Today's exact topic planner</h2><p class="muted">The app uses your phone’s local date automatically and refreshes today’s topics when a new day starts. You can still choose another date to preview its plan.</p></div><input class="datepick" id="planDate" type="date" aria-label="Choose study date" onchange="renderAutoPlan();renderPeriodProgress()"></div><div id="autoPlan"></div><div id="carryoverDashboard"></div></div>
 <div class="card"><h2>Your updated test strategy</h2><p class="muted">Alternate-day tests from 1 January to 24 April, daily Prelims tests from 25 April to 20 May, then one Mains paper/practice session every day from 25 May to 19 August.</p><div class="row"><b>Topic completion</b><b id="topicPct">0%</b></div><div class="progress"><i id="topicBar"></i></div><div class="row" style="margin-top:12px"><b>Test completion</b><b id="testPct">0%</b></div><div class="progress"><i id="testBar"></i></div></div>
 <div class="card"><h2>Daily, weekly and monthly progress</h2><p class="muted">Calculated from checked study blocks, completed topics and marked tests.</p><div class="grid">
 <div class="metric"><b id="progressDaily">0%</b><span>Selected day · study blocks</span><div class="progress"><i id="progressDailyBar"></i></div></div>
@@ -116,7 +116,12 @@ const KEY="upsc27v2_";
 function get(k,d){try{return JSON.parse(localStorage.getItem(KEY+k))??d}catch(e){return d}}
 function put(k,v){localStorage.setItem(KEY+k,JSON.stringify(v))}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function today(){return new Date().toISOString().slice(0,10)}
+function today(){
+ // Use the device's local calendar date (not UTC), so India and other time zones never show yesterday by mistake.
+ const d=new Date();
+ const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+ return `${y}-${m}-${day}`;
+}
 
 function carryoverTasks(){return get("carryoverTasks",[])}
 function ensureCarryovers(){
@@ -432,6 +437,23 @@ function renderPerformance(){
 function renderAll(){ensureCarryovers();if(!document.getElementById("planDate").value){document.getElementById("planDate").value=today();document.getElementById("routineDate").value=today();}renderAutoPlan();renderPeriodProgress();document.getElementById("carryoverDashboard").innerHTML=carryoverMarkup();document.getElementById("carryoverRoutine").innerHTML=carryoverMarkup();renderDaily();renderPhases();renderTopics();renderTests();renderScores();renderChem();renderRevision();renderPerformance();let topics=get("topics",{}),n=Object.keys(topics).length,total=Object.values(subjects).reduce((a,x)=>a+x.length,0),td=get("tests",[]),tests=allTests().length,p=Math.round(n/total*100),tp=Math.round(td.length/tests*100);document.getElementById("doneTopics").textContent=`${n}/${total}`;document.getElementById("topicPct").textContent=p+"%";document.getElementById("topicBar").style.width=p+"%";document.getElementById("topicPct2").textContent=p+"%";document.getElementById("topicBar2").style.width=p+"%";document.getElementById("doneTests").textContent=`${td.length}/${tests}`;document.getElementById("testPct").textContent=tp+"%";document.getElementById("testBar").style.width=tp+"%";let next=allTests().find(t=>!td.includes(t.id));document.getElementById("nextTest").innerHTML=next?`<b>${new Date(next.date+"T12:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</b><p>${esc(next.name)}</p><span class="badge">${esc(next.kind)} · 2:00–5:00 PM</span>`:"All tests marked complete."}
 document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.tab).classList.add("active")}));
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.filter;renderTests()}));
-document.getElementById("scoreDate").value=today();renderAll();
+// Always open on the actual local date. If the page remains open overnight,
+// refresh the selected date and daily carry-forward tasks as soon as the new day is detected.
+function refreshForLocalDate(force=false){
+ const current=today();
+ const last=get("lastObservedLocalDate","");
+ if(force || current!==last){
+  put("lastObservedLocalDate",current);
+  document.getElementById("planDate").value=current;
+  document.getElementById("routineDate").value=current;
+  ensureCarryovers();
+  renderAll();
+ }
+}
+document.getElementById("scoreDate").value=today();
+refreshForLocalDate(true);
+window.addEventListener("focus",()=>refreshForLocalDate());
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshForLocalDate()});
+setInterval(()=>refreshForLocalDate(),30000);
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script></body></html>
