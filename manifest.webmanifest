@@ -1,7 +1,7 @@
 {
-  "name": "UPSC 2027 Test-Driven Study Planner",
+  "name": "UPSC 2027 Productivity Planner",
   "short_name": "UPSC 2027",
-  "description": "Personal UPSC planner with alternate-day Prelims tests and daily Mains papers.",
+  "description": "Personal UPSC planner with focus timer, mistake log and daily study tracking.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="UPSC 2027">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>UPSC 2027 – V22 Command Centre</title>
+<title>UPSC 2027 – V30 Command Centre</title>
 <style>
 :root{--navy:#102b46;--blue:#245b87;--gold:#e5b85c;--bg:#f3f6fa;--card:#fff;--ink:#172536;--muted:#64748b;--line:#e4eaf1;--green:#16845b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
@@ -81,7 +81,7 @@ body{padding-bottom:28px!important}
 @media(min-width:700px){#sideNavigation{top:50%!important;bottom:auto!important;left:auto!important;max-width:280px!important}#sideNavToggle{top:50%}}
 @media(prefers-reduced-motion:reduce){#sideNavigation{transition:none}}
 
-.daily-checklist-wrap{margin-top:18px;padding-top:16px;border-top:1px solid var(--line,#e5e7eb)}#dailyList .item{display:flex;align-items:center;gap:12px;padding:13px 10px;border-bottom:1px solid var(--line,#e5e7eb);border-radius:10px}#dailyList .item input[type=checkbox]{width:22px;height:22px;flex:0 0 22px;accent-color:#173b5d}#dailyList .item label{line-height:1.45;flex:1}.daily-checklist-wrap h3{margin-bottom:6px}</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPSC CSE 2027 · V27 CHECKLIST + TIMER UPDATE · AUTO DATE</div>
+.daily-checklist-wrap{margin-top:18px;padding-top:16px;border-top:1px solid var(--line,#e5e7eb)}#dailyList .item{display:flex;align-items:center;gap:12px;padding:13px 10px;border-bottom:1px solid var(--line,#e5e7eb);border-radius:10px}#dailyList .item input[type=checkbox]{width:22px;height:22px;flex:0 0 22px;accent-color:#173b5d}#dailyList .item label{line-height:1.45;flex:1}.daily-checklist-wrap h3{margin-bottom:6px}</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPSC CSE 2027 · V30 PROGRESS SYNC + ROADMAP · AUTO DATE</div>
 <header><div class="wrap">
 <h1>UPSC CSE 2027</h1>
 <p>Your preparation command centre · Focus on today, improve every week</p>
@@ -103,9 +103,9 @@ body{padding-bottom:28px!important}
 <div class="card"><div class="row"><div><h2>Today's exact topic planner</h2><p class="muted">The app uses your phone’s local date automatically and refreshes today’s topics when a new day starts. You can still choose another date to preview its plan.</p></div><input class="datepick" id="planDate" type="date" aria-label="Choose study date" onchange="renderAutoPlan();renderPeriodProgress()"></div><div id="autoPlan"></div><div id="carryoverDashboard"></div></div>
 <div class="card"><h2>Your updated test strategy</h2><p class="muted">Alternate-day tests from 1 January to 24 April, daily Prelims tests from 25 April to 20 May, then one Mains paper/practice session every day from 25 May to 19 August.</p><div class="row"><b>Topic completion</b><b id="topicPct">0%</b></div><div class="progress"><i id="topicBar"></i></div><div class="row" style="margin-top:12px"><b>Test completion</b><b id="testPct">0%</b></div><div class="progress"><i id="testBar"></i></div></div>
 <div class="card"><h2>Daily, weekly and monthly progress</h2><p class="muted">Calculated from checked study blocks, completed topics and marked tests.</p><div class="grid">
-<div class="metric"><b id="progressDaily">0%</b><span>Selected day · study blocks</span><div class="progress"><i id="progressDailyBar"></i></div></div>
-<div class="metric"><b id="progressWeekly">0%</b><span>Selected week · study blocks</span><div class="progress"><i id="progressWeeklyBar"></i></div></div>
-<div class="metric"><b id="progressMonthly">0%</b><span>Selected month · study blocks</span><div class="progress"><i id="progressMonthlyBar"></i></div></div>
+<div class="metric"><b id="progressDaily">0%</b><span>Selected day · study blocks</span><div class="progress"><i id="progressDailyBar"></i></div><span id="blocksDaily" class="small">0 / 8 blocks completed</span></div>
+<div class="metric"><b id="progressWeekly">0%</b><span>Selected week · study blocks</span><div class="progress"><i id="progressWeeklyBar"></i></div><span id="blocksWeekly" class="small">0 / 56 blocks</span></div>
+<div class="metric"><b id="progressMonthly">0%</b><span>Selected month · study blocks</span><div class="progress"><i id="progressMonthlyBar"></i></div><span id="blocksMonthly" class="small">0 blocks completed</span></div>
 <div class="metric"><b id="testsWeekly">0/0</b><span>Tests completed this week</span></div>
 <div class="metric"><b id="testsMonthly">0/0</b><span>Tests completed this month</span></div>
 <div class="metric"><b id="topicsWeekly">0</b><span>Topics completed this week</span></div>
@@ -212,8 +212,18 @@ function carryoverMarkup(){
 }
 function finishCarryover(id){put("carryoverTasks",carryoverTasks().filter(x=>x.id!==id));renderAll()}
 function dayState(){ensureCarryovers();return get("daily",{date:today(),done:[]})}
-function renderDaily(){let s=dayState(),h=s.done.reduce((n,i)=>n+daily[i][1],0),out=daily.map((t,i)=>`<div class="item"><input type="checkbox" ${s.done.includes(i)?"checked":""} onchange="toggleDaily(${i},this.checked)"><label>${t[0]} <span class="tag">${t[1]}h</span></label></div>`).join("");document.getElementById("dailyList").innerHTML=out;document.getElementById("dashDaily").innerHTML=out;document.getElementById("hoursTotal").textContent=`${h} / 11 hours checked`;document.getElementById("dailySummary").textContent=`${s.done.length}/8 study blocks completed`}
-function toggleDaily(i,on){let s=dayState();s.done=on?[...new Set([...s.done,i])]:s.done.filter(x=>x!==i);put("daily",s);let h=get("dailyHistory",{});h[s.date]=s.done;put("dailyHistory",h);renderDaily()}
+function renderDaily(){
+ let s=dayState(),h=s.done.reduce((n,i)=>n+daily[i][1],0),out=daily.map((t,i)=>`<div class="item"><input type="checkbox" ${s.done.includes(i)?"checked":""} onchange="toggleDaily(${i},this.checked)"><label>${t[0]} <span class="tag">${t[1]}h</span></label></div>`).join("");
+ document.getElementById("dailyList").innerHTML=out;document.getElementById("dashDaily").innerHTML=out;
+ document.getElementById("hoursTotal").textContent=`${h} / 11 hours checked`;
+ document.getElementById("dailySummary").textContent=`${s.done.length}/8 study blocks completed`;
+ // Keep the Home dashboard in sync with the exact same saved checklist state.
+ const hh=document.getElementById('homeHours'),ht=document.getElementById('homeTasks'),hb=document.getElementById('homeHoursBar'),tb=document.getElementById('homeTasksBar');
+ if(hh)hh.textContent=`${h} / 11h`;if(ht)ht.textContent=`${s.done.length} / 8`;
+ if(hb)hb.style.width=Math.min(100,h/11*100)+'%';if(tb)tb.style.width=(s.done.length/8*100)+'%';
+ renderPeriodProgress();
+}
+function toggleDaily(i,on){let s=dayState();s.done=on?[...new Set([...s.done,i])]:s.done.filter(x=>x!==i);put("daily",s);let h=get("dailyHistory",{});h[s.date]=s.done;put("dailyHistory",h);renderDaily();renderPeriodProgress();try{renderHomeProductivity()}catch(e){}}
 function resetDaily(){put("daily",{date:today(),done:[]});let h=get("dailyHistory",{});h[today()]=[];put("dailyHistory",h);renderDaily()}
 function renderPhases(){let done=get("phases",[]);document.getElementById("phases").innerHTML=phases.map((p,i)=>`<div class="phase"><div class="row"><b>${p[1]}</b><label class="small"><input type="checkbox" ${done.includes(i)?"checked":""} onchange="togglePhase(${i},this.checked)"> Complete</label></div><span class="badge">${p[0]}</span><p><b>GS:</b> ${p[2]}</p><p><b>Chemistry:</b> ${p[3]}</p></div>`).join("")}
 function togglePhase(i,on){let a=get("phases",[]);a=on?[...new Set([...a,i])]:a.filter(x=>x!==i);put("phases",a);renderAll()}
@@ -456,6 +466,10 @@ function renderPeriodProgress(){
  setMetric("progressDaily",Math.round(dailyDone/8*100));
  setMetric("progressWeekly",Math.round(weeklyDone/56*100));
  setMetric("progressMonthly",Math.round(monthlyDone/(monthDays*8)*100));
+ const bd=document.getElementById('blocksDaily'),bw=document.getElementById('blocksWeekly'),bm=document.getElementById('blocksMonthly');
+ if(bd)bd.textContent=`${dailyDone} / 8 blocks completed`;
+ if(bw)bw.textContent=`${weeklyDone} / 56 blocks completed`;
+ if(bm)bm.textContent=`${monthlyDone} / ${monthDays*8} blocks completed`;
  const all=allTests(),done=get("tests",[]),wt=all.filter(t=>dateInWeek(t.date,ref)),mt=all.filter(t=>dateInMonth(t.date,ref));
  document.getElementById("testsWeekly").textContent=`${wt.filter(t=>done.includes(t.id)).length}/${wt.length}`;
  document.getElementById("testsMonthly").textContent=`${mt.filter(t=>done.includes(t.id)).length}/${mt.length}`;
@@ -547,7 +561,32 @@ function importBackup(){
  const f=document.getElementById('backupFile').files[0];if(!f){alert('Choose a backup JSON file first.');return}const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.data||typeof x.data!=='object')throw new Error('Invalid backup');let count=0;Object.entries(x.data).forEach(([k,v])=>{if(k.startsWith(KEY)&&typeof v==='string'){localStorage.setItem(k,v);count++}});renderAll();loadDailyTools();renderPYQ();renderAnswerReviews();renderWeeklyReview();document.getElementById('backupStatus').textContent='Restored '+count+' planner records. Your app has refreshed.';}catch(e){alert('Could not read this backup. Please select a JSON backup exported from this planner.')}};r.readAsText(f);
 }
 
-function switchTab(id){document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.tab===id)});document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='topics'){renderTopics()}if(id==='chemistry'){renderChem()}if(id==='productivity'){renderMistakes();renderBacklog();renderWeeklyReviewProductivity()}}
+// V30: central refresh routine. V29 handlers called renderAll(), but the function was missing,
+// so progress widgets and other sections could remain stale after a checkbox was changed.
+function renderAll(){
+  const jobs=[
+    ()=>renderDaily(),
+    ()=>renderPhases(),
+    ()=>renderTopics(),
+    ()=>renderTests(),
+    ()=>renderScores(),
+    ()=>renderChem(),
+    ()=>renderRevision(),
+    ()=>renderPerformance(),
+    ()=>renderPYQ(),
+    ()=>renderAnswerReviews(),
+    ()=>renderWeeklyReview(),
+    ()=>renderMistakes(),
+    ()=>renderBacklog(),
+    ()=>renderWeeklyReviewProductivity(),
+    ()=>renderAutoPlan(),
+    ()=>renderPeriodProgress(),
+    ()=>renderHomeProductivity()
+  ];
+  jobs.forEach(fn=>{try{fn()}catch(err){console.warn('Planner section refresh skipped:',err)}});
+}
+
+function switchTab(id){document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.tab===id)});document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='topics'){renderTopics()}if(id==='roadmap'){renderPhases()}if(id==='chemistry'){renderChem()}if(id==='productivity'){renderMistakes();renderBacklog();renderWeeklyReviewProductivity()}}
 // V25 fix: connect every side-menu item to its matching content panel.
 document.querySelectorAll('nav button[data-tab]').forEach(button=>{button.addEventListener('click',()=>switchTab(button.dataset.tab));});
 let focusTick=null;
@@ -614,7 +653,8 @@ try{renderTopics()}catch(e){console.error("Topic checklist render failed",e);doc
 try{renderChem()}catch(e){console.error("Chemistry checklist render failed",e);document.getElementById("chemList").innerHTML='<p class="muted">Chemistry checklist could not load. Reload the page or contact support.</p>'}
 try{renderTests()}catch(e){console.error("Test schedule render failed",e)}
 try{refreshForLocalDate(true)}catch(e){console.error("Dashboard initialization issue",e)}
-window.addEventListener("focus",()=>refreshForLocalDate());
+window.addEventListener("storage",e=>{if(e.key&&e.key.startsWith(KEY)){try{renderAll()}catch(err){console.warn(err)}}});
+window.addEventListener("focus",()=>{refreshForLocalDate();try{renderDaily();renderPeriodProgress()}catch(e){}});
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshForLocalDate()});
 setInterval(()=>refreshForLocalDate(),30000);
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
