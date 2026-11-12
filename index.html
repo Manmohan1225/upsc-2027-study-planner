@@ -217,7 +217,17 @@ function toggleDaily(i,on){let s=dayState();s.done=on?[...new Set([...s.done,i])
 function resetDaily(){put("daily",{date:today(),done:[]});let h=get("dailyHistory",{});h[today()]=[];put("dailyHistory",h);renderAll()}
 function renderPhases(){let done=get("phases",[]);document.getElementById("phases").innerHTML=phases.map((p,i)=>`<div class="phase"><div class="row"><b>${p[1]}</b><label class="small"><input type="checkbox" ${done.includes(i)?"checked":""} onchange="togglePhase(${i},this.checked)"> Complete</label></div><span class="badge">${p[0]}</span><p><b>GS:</b> ${p[2]}</p><p><b>Chemistry:</b> ${p[3]}</p></div>`).join("")}
 function togglePhase(i,on){let a=get("phases",[]);a=on?[...new Set([...a,i])]:a.filter(x=>x!==i);put("phases",a);renderAll()}
-function renderTopics(){let state=get("topics",{}),out="";for(let [g,items] of Object.entries(subjects)){out+=`<div class="card"><h3>${g}</h3><div class="small">${items.filter(x=>state[g+"|"+x]).length}/${items.length} completed</div>`+items.map(x=>`<div class="item"><input type="checkbox" ${state[g+"|"+x]?"checked":""} onchange="toggleTopic('${esc(g)}','${esc(x)}',this.checked)"><label>${esc(x)}</label></div>`).join("")+"</div>"}document.getElementById("subjectTopics").innerHTML=out}
+function renderTopics(){
+ let state=get("topics",{}),out="";
+ for(let [g,items] of Object.entries(subjects)){
+  const completed=items.filter(x=>!!state[g+"|"+x]).length;
+  const allDone=completed===items.length;
+  out+=`<div class="card subject-check-card"><div class="row" style="align-items:center;gap:12px"><label style="display:flex;align-items:center;gap:10px;font-weight:800;flex:1"><input type="checkbox" aria-label="Mark all ${esc(g)} topics complete" ${allDone?"checked":""} onchange="toggleSubject('${esc(g)}',this.checked)"><span>${esc(g)}</span></label><span class="tag">${completed}/${items.length}</span></div><div class="progress"><i style="width:${Math.round(completed/items.length*100)}%"></i></div>`;
+  out+=items.map(x=>`<div class="item"><input type="checkbox" aria-label="Complete ${esc(x)}" ${state[g+"|"+x]?"checked":""} onchange="toggleTopic('${esc(g)}','${esc(x)}',this.checked)"><label>${esc(x)}</label></div>`).join("")+"</div>";
+ }
+ document.getElementById("subjectTopics").innerHTML=out;
+}
+function toggleSubject(g,on){let s=get("topics",{}),d=get("topicDates",{});(subjects[g]||[]).forEach(x=>{const k=g+"|"+x;if(on){s[k]=true;if(!d[k])d[k]=today()}else{delete s[k];delete d[k]}});put("topics",s);put("topicDates",d);renderAll()}
 function toggleTopic(g,x,on){let s=get("topics",{}),d=get("topicDates",{}),k=g+"|"+x;if(on){s[k]=true;d[k]=today()}else{delete s[k];delete d[k]}put("topics",s);put("topicDates",d);renderAll()}
 function allTests(){return [...SCHEDULE.prelims.map((t,i)=>({...t,id:"p"+i,group:t.date<"2027-04-25"?"pre":"daily"})),...SCHEDULE.mains.map((t,i)=>({...t,id:"m"+i,group:"mains"}))].sort((a,b)=>a.date.localeCompare(b.date))}
 let filter="all";
@@ -596,6 +606,11 @@ function refreshForLocalDate(force=false){
 }
 document.getElementById("scoreDate").value=today();document.getElementById("pyqDate").value=today();document.getElementById("answerDate").value=today();
 refreshForLocalDate(true);
+// Defensive first paint: always render the subject/topic and Chemistry checklists.
+// These calls are isolated so one unrelated dashboard widget cannot hide the checkboxes.
+try{renderTopics()}catch(e){console.error("Topic checklist render failed",e)}
+try{renderChem()}catch(e){console.error("Chemistry checklist render failed",e)}
+try{renderTests()}catch(e){console.error("Test schedule render failed",e)}
 window.addEventListener("focus",()=>refreshForLocalDate());
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshForLocalDate()});
 setInterval(()=>refreshForLocalDate(),30000);
