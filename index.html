@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="UPSC 2027">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>UPSC 2027 – V21 Command Centre</title>
+<title>UPSC 2027 – V22 Command Centre</title>
 <style>
 :root{--navy:#102b46;--blue:#245b87;--gold:#e5b85c;--bg:#f3f6fa;--card:#fff;--ink:#172536;--muted:#64748b;--line:#e4eaf1;--green:#16845b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
@@ -68,7 +68,20 @@ table{font-size:12px}th,td{padding:9px 6px}footer{font-size:11px;padding:15px}
 #dashboard .datepick{max-width:150px}.datepick{font-size:12px}
 @media(min-width:700px){body{padding-bottom:25px}nav{position:sticky!important;top:0!important;bottom:auto!important;max-width:760px}main{margin-top:20px!important}#moreMenu{top:65px;bottom:auto;left:auto;width:320px} }
 
-</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPSC CSE 2027 · V21 CLEAN COMMAND CENTRE · AUTO DATE</div>
+
+/* V22: dotted side handle with expandable vertical navigation */
+body{padding-bottom:28px!important}
+#sideNavToggle{position:fixed;z-index:101;right:0;top:48%;transform:translateY(-50%);width:28px;height:76px;border:0;border-radius:14px 0 0 14px;background:#173b5d;color:#fff;box-shadow:0 5px 18px #142b4530;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:8px 5px;cursor:pointer}
+#sideNavToggle span{width:4px;height:4px;border-radius:50%;background:#fff;display:block}
+#sideNavigation{position:fixed!important;z-index:100;top:50%!important;right:0!important;bottom:auto!important;left:auto!important;transform:translate(105%,-50%);width:min(280px,82vw);max-height:76vh;overflow-y:auto;display:flex!important;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:5px!important;padding:12px!important;background:#fff!important;border:1px solid #e4eaf1!important;border-right:0!important;border-radius:18px 0 0 18px!important;box-shadow:0 12px 35px #142b4530!important;transition:transform .22s ease}
+#sideNavigation.sideOpen{transform:translate(0,-50%)}
+#sideNavigation button{display:flex!important;flex:0 0 auto!important;width:100%;justify-content:flex-start!important;text-align:left!important;padding:12px 14px!important;border-radius:11px!important;background:#f3f6fa!important;color:#29445f!important;font-size:14px!important}
+#sideNavigation button.active{background:#142b45!important;color:#fff!important}
+#moreMenu{display:none!important}
+@media(min-width:700px){#sideNavigation{top:50%!important;bottom:auto!important;left:auto!important;max-width:280px!important}#sideNavToggle{top:50%}}
+@media(prefers-reduced-motion:reduce){#sideNavigation{transition:none}}
+
+</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPSC CSE 2027 · V22 SIDE MENU COMMAND CENTRE · AUTO DATE</div>
 <header><div class="wrap">
 <h1>UPSC CSE 2027</h1>
 <p>Your preparation command centre · Focus on today, improve every week</p>
@@ -536,16 +549,17 @@ function renderWeeklyReviewProductivity(){let el=document.getElementById('weekly
 function renderHomeProductivity(){let d=dayState(),hrs=d.done.reduce((n,i)=>n+daily[i][1],0),tasks=get('dailyTools_'+today(),{priorities:[]}).priorities||[],due=Object.values(get('revisionDone',{})).filter(v=>!v).length;document.getElementById('homeHours').textContent=hrs+' / 11h';document.getElementById('homeHoursBar').style.width=Math.min(100,hrs/11*100)+'%';document.getElementById('homeTasks').textContent=d.done.length+' / 8';document.getElementById('homeTasksBar').style.width=(d.done.length/8*100)+'%';document.getElementById('homeRevision').textContent=document.querySelectorAll('#revisionList input[type=checkbox]:not(:checked)').length||'—';let q=get('pyqLog',[]).filter(x=>x.date===today()).reduce((n,x)=>n+x.attempt,0);document.getElementById('homeQuestions').textContent=q;document.getElementById('homeDate').textContent=new Date(today()+'T12:00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});document.getElementById('homePriorities').innerHTML=tasks.filter(Boolean).length?tasks.filter(Boolean).map((x,i)=>`<div class="priorityTile"><b>${i+1}.</b> ${esc(x)}</div>`).join(''):'<span class="muted">Add your three outcomes in Study tools.</span>';document.getElementById('homeNextAction').textContent=carryoverTasks().length?'Clear one carry-forward task before adding extra work.':'Complete the next scheduled study block, then test recall without notes.'}
 function renderAll(){ensureCarryovers();if(!document.getElementById("planDate").value){document.getElementById("planDate").value=today();document.getElementById("routineDate").value=today();}renderAutoPlan();renderPeriodProgress();document.getElementById("carryoverDashboard").innerHTML=carryoverMarkup();document.getElementById("carryoverRoutine").innerHTML=carryoverMarkup();renderDaily();renderPhases();renderTopics();renderTests();renderScores();renderChem();renderRevision();renderPerformance();loadDailyTools();renderPYQ();renderAnswerReviews();renderWeeklyReview();renderMistakes();renderBacklog();paintFocus();renderHomeProductivity();renderWeeklyReviewProductivity();let topics=get("topics",{}),n=Object.keys(topics).length,total=Object.values(subjects).reduce((a,x)=>a+x.length,0),td=get("tests",[]),tests=allTests().length,p=Math.round(n/total*100),tp=Math.round(td.length/tests*100);document.getElementById("doneTopics").textContent=`${n}/${total}`;document.getElementById("topicPct").textContent=p+"%";document.getElementById("topicBar").style.width=p+"%";document.getElementById("topicPct2").textContent=p+"%";document.getElementById("topicBar2").style.width=p+"%";document.getElementById("doneTests").textContent=`${td.length}/${tests}`;document.getElementById("testPct").textContent=tp+"%";document.getElementById("testBar").style.width=tp+"%";let next=allTests().find(t=>!td.includes(t.id));document.getElementById("nextTest").innerHTML=next?`<b>${new Date(next.date+"T12:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</b><p>${esc(next.name)}</p><span class="badge">${esc(next.kind)} · 2:00–5:30 PM</span>`:"All tests marked complete."}
 document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
-// V21 compact bottom navigation: five primary destinations plus a More drawer.
+// V22 dotted side handle: opens a compact vertical navigation drawer.
 (()=>{
- const nav=document.querySelector('nav'); if(!nav || document.getElementById('moreNavButton')) return;
- const all=[...nav.querySelectorAll('button[data-tab]')];
- const labels={roadmap:'Roadmap',calendar:'Test schedule',scores:'Marks & analysis',revision:'Revision planner',performance:'Performance',studytools:'Study tools',backup:'Backup'};
- const menu=document.createElement('div');menu.id='moreMenu';menu.setAttribute('aria-label','More sections');
- all.slice(5).forEach(b=>{const x=document.createElement('button');x.type='button';x.textContent=labels[b.dataset.tab]||b.textContent.trim();x.addEventListener('click',()=>{switchTab(b.dataset.tab);menu.classList.remove('open')});menu.appendChild(x)});
- document.body.appendChild(menu);
- const more=document.createElement('button');more.type='button';more.id='moreNavButton';more.className='moreNav';more.textContent='More';more.addEventListener('click',()=>menu.classList.toggle('open'));nav.appendChild(more);
- document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!more.contains(e.target))menu.classList.remove('open')});
+ const nav=document.querySelector('nav'); if(!nav || document.getElementById('sideNavToggle')) return;
+ nav.id='sideNavigation';
+ const toggle=document.createElement('button'); toggle.id='sideNavToggle'; toggle.type='button'; toggle.setAttribute('aria-label','Open navigation'); toggle.setAttribute('aria-expanded','false'); toggle.innerHTML='<span></span><span></span><span></span>';
+ document.body.appendChild(toggle);
+ const close=()=>{nav.classList.remove('sideOpen');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open navigation')};
+ toggle.addEventListener('click',()=>{const open=nav.classList.toggle('sideOpen');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Close navigation':'Open navigation')});
+ nav.querySelectorAll('button[data-tab]').forEach(b=>b.addEventListener('click',close));
+ document.addEventListener('click',e=>{if(!nav.contains(e.target)&&!toggle.contains(e.target))close()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 })();
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.filter;renderTests()}));
 // Always open on the actual local date. If the page remains open overnight,
