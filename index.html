@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="UPSC 2027">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-<title>UPSC 2027 – V30 Command Centre</title>
+<title>UPSC 2027 – V31 Command Centre</title>
 <style>
 :root{--navy:#102b46;--blue:#245b87;--gold:#e5b85c;--bg:#f3f6fa;--card:#fff;--ink:#172536;--muted:#64748b;--line:#e4eaf1;--green:#16845b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
@@ -81,7 +81,7 @@ body{padding-bottom:28px!important}
 @media(min-width:700px){#sideNavigation{top:50%!important;bottom:auto!important;left:auto!important;max-width:280px!important}#sideNavToggle{top:50%}}
 @media(prefers-reduced-motion:reduce){#sideNavigation{transition:none}}
 
-.daily-checklist-wrap{margin-top:18px;padding-top:16px;border-top:1px solid var(--line,#e5e7eb)}#dailyList .item{display:flex;align-items:center;gap:12px;padding:13px 10px;border-bottom:1px solid var(--line,#e5e7eb);border-radius:10px}#dailyList .item input[type=checkbox]{width:22px;height:22px;flex:0 0 22px;accent-color:#173b5d}#dailyList .item label{line-height:1.45;flex:1}.daily-checklist-wrap h3{margin-bottom:6px}</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPSC CSE 2027 · V30 PROGRESS SYNC + ROADMAP · AUTO DATE</div>
+.daily-checklist-wrap{margin-top:18px;padding-top:16px;border-top:1px solid var(--line,#e5e7eb)}#dailyList .item{display:flex;align-items:center;gap:12px;padding:13px 10px;border-bottom:1px solid var(--line,#e5e7eb);border-radius:10px}#dailyList .item input[type=checkbox]{width:22px;height:22px;flex:0 0 22px;accent-color:#173b5d}#dailyList .item label{line-height:1.45;flex:1}.daily-checklist-wrap h3{margin-bottom:6px}</style></head><body><div style="margin:10px auto;max-width:1100px;padding:12px 16px;border:2px solid #16a34a;border-radius:12px;background:#10251a;color:#eaffef;font-weight:700;text-align:center">UPSC CSE 2027 · V31 TOPIC PROGRESS FIX · ROADMAP · AUTO DATE</div>
 <header><div class="wrap">
 <h1>UPSC CSE 2027</h1>
 <p>Your preparation command centre · Focus on today, improve every week</p>
@@ -236,6 +236,12 @@ function renderTopics(){
   out+=items.map(x=>`<div class="item"><input type="checkbox" aria-label="Complete ${esc(x)}" ${state[g+"|"+x]?"checked":""} onchange="toggleTopic('${esc(g)}','${esc(x)}',this.checked)"><label>${esc(x)}</label></div>`).join("")+"</div>";
  }
  document.getElementById("subjectTopics").innerHTML=out;
+ // V31: aggregate every subject's checked topics into the overall tracker percentage.
+ const totalTopics=Object.values(subjects).reduce((n,a)=>n+a.length,0);
+ const completedTopics=Object.entries(subjects).reduce((n,[g,items])=>n+items.filter(x=>!!state[g+"|"+x]).length,0);
+ const overall=totalTopics?Math.round(completedTopics/totalTopics*100):0;
+ ["topicPct","topicPct2"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=overall+"%"});
+ ["topicBar","topicBar2"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=overall+"%"});
 }
 function toggleSubject(g,on){let s=get("topics",{}),d=get("topicDates",{});(subjects[g]||[]).forEach(x=>{const k=g+"|"+x;if(on){s[k]=true;if(!d[k])d[k]=today()}else{delete s[k];delete d[k]}});put("topics",s);put("topicDates",d);renderAll()}
 function toggleTopic(g,x,on){let s=get("topics",{}),d=get("topicDates",{}),k=g+"|"+x;if(on){s[k]=true;d[k]=today()}else{delete s[k];delete d[k]}put("topics",s);put("topicDates",d);renderAll()}
@@ -529,7 +535,9 @@ function renderPerformance(){
 
 function saveDailyTools(){
  const d=today(),obj={date:d,priorities:[1,2,3].map(i=>document.getElementById('priority'+i).value.trim()),recallScore:document.getElementById('recallScore').value,recallNotes:document.getElementById('recallNotes').value.trim()};
- put('dailyTools_'+d,obj);document.getElementById('dailyToolsSaved').textContent='Saved for '+d;renderWeeklyReview();
+ put('dailyTools_'+d,obj);
+ const status=document.getElementById('dailyToolsSaved');if(status)status.textContent='Auto-saved on this device · '+d;
+ renderWeeklyReview();renderHomeProductivity();
 }
 function loadDailyTools(){
  const d=today(),x=get('dailyTools_'+d,{priorities:['','',''],recallScore:'',recallNotes:''});
@@ -554,11 +562,21 @@ function renderWeeklyReview(){
 }
 function toggleWeeklyReview(i,on){const ref=dateOnly(today()),offset=(ref.getDay()+6)%7;ref.setDate(ref.getDate()-offset);const wk=ref.getFullYear()+'-'+String(ref.getMonth()+1).padStart(2,'0')+'-'+String(ref.getDate()).padStart(2,'0'),k='weeklyReview_'+wk,a=get(k,[]),b=on?[...new Set([...a,i])]:a.filter(x=>x!==i);put(k,b);renderWeeklyReview()}
 function exportBackup(){
- const data={app:'UPSC CSE 2027 Planner',version:21,exportedAt:new Date().toISOString(),data:{}};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(KEY))data.data[k]=localStorage.getItem(k)}
+ const data={app:'UPSC CSE 2027 Planner',version:32,exportedAt:new Date().toISOString(),data:{}};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(KEY))data.data[k]=localStorage.getItem(k)}
  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='UPSC_2027_progress_backup_'+today()+'.json';a.click();URL.revokeObjectURL(url);document.getElementById('backupStatus').textContent='Backup download started. Keep the JSON file somewhere safe.';
 }
 function importBackup(){
  const f=document.getElementById('backupFile').files[0];if(!f){alert('Choose a backup JSON file first.');return}const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.data||typeof x.data!=='object')throw new Error('Invalid backup');let count=0;Object.entries(x.data).forEach(([k,v])=>{if(k.startsWith(KEY)&&typeof v==='string'){localStorage.setItem(k,v);count++}});renderAll();loadDailyTools();renderPYQ();renderAnswerReviews();renderWeeklyReview();document.getElementById('backupStatus').textContent='Restored '+count+' planner records. Your app has refreshed.';}catch(e){alert('Could not read this backup. Please select a JSON backup exported from this planner.')}};r.readAsText(f);
+}
+
+// Home dashboard summary, derived from the same saved records used by the trackers.
+function renderHomeProductivity(){
+ const d=today(),tools=get('dailyTools_'+d,{priorities:['','','']});
+ const priorityBox=document.getElementById('homePriorities');
+ if(priorityBox){const list=(tools.priorities||[]).filter(x=>String(x||'').trim());priorityBox.innerHTML=list.length?list.map((x,i)=>`<div class="priorityTile"><b>${i+1}.</b> ${esc(x)}</div>`).join(''):'<span class="muted">Add your three outcomes in Study tools. They auto-save as you type.</span>';}
+ const rev=document.getElementById('homeRevision');if(rev)rev.textContent=String(Object.keys(get('revisionDueCache',{})).length||document.querySelectorAll('#revisionList .item').length||0);
+ const q=document.getElementById('homeQuestions');if(q){const logs=get('pyqLog',[]);q.textContent=String(logs.filter(x=>x.date===d).reduce((n,x)=>n+Number(x.attempt||0),0));}
+ const next=document.getElementById('homeNextAction');if(next){const pending=daily.find((x,i)=>!dayState().done.includes(i));next.textContent=pending?`Next: ${pending[0]}`:'All eight study blocks checked. Use remaining time for review and rest.';}
 }
 
 // V30: central refresh routine. V29 handlers called renderAll(), but the function was missing,
@@ -586,7 +604,13 @@ function renderAll(){
   jobs.forEach(fn=>{try{fn()}catch(err){console.warn('Planner section refresh skipped:',err)}});
 }
 
-function switchTab(id){document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.tab===id)});document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='topics'){renderTopics()}if(id==='roadmap'){renderPhases()}if(id==='chemistry'){renderChem()}if(id==='productivity'){renderMistakes();renderBacklog();renderWeeklyReviewProductivity()}}
+function switchTab(id){
+ const valid=document.getElementById(id)&&document.querySelector(`nav button[data-tab="${id}"]`);if(!valid)id='dashboard';
+ document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.tab===id)});
+ document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));
+ put('activeTab',id);window.scrollTo({top:0,behavior:'smooth'});
+ if(id==='topics')renderTopics();if(id==='roadmap')renderPhases();if(id==='chemistry')renderChem();if(id==='productivity'){renderMistakes();renderBacklog();renderWeeklyReviewProductivity()}
+}
 // V25 fix: connect every side-menu item to its matching content panel.
 document.querySelectorAll('nav button[data-tab]').forEach(button=>{button.addEventListener('click',()=>switchTab(button.dataset.tab));});
 let focusTick=null;
@@ -594,10 +618,10 @@ function focusState(){return get('focusState',{running:false,startedAt:0,elapsed
 function focusElapsed(s){return s.elapsed+(s.running?Math.max(0,Math.floor((Date.now()-s.startedAt)/1000)):0)}
 function fmtTime(sec){let h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),v=sec%60;return [h,m,v].map(x=>String(x).padStart(2,'0')).join(':')}
 function paintFocus(){let s=focusState(),elapsed=focusElapsed(s);document.getElementById('focusClock').textContent=fmtTime(elapsed);let shield=document.getElementById('focusShield');if(shield){shield.style.display=s.running?'flex':'none';document.getElementById('shieldTask').textContent=s.label||'Focused study';document.getElementById('shieldClock').textContent=fmtTime(Math.max(0,s.target*60-elapsed));}document.getElementById('focusStatus').textContent=s.running?'Focus session running · stay with one task':(elapsed?'Session paused · resume when ready':'Ready for your next focused session.');document.getElementById('focusStats').textContent='Today: '+(get('focusSessions',[]).filter(x=>x.date===today()).reduce((n,x)=>n+x.seconds,0)/3600).toFixed(1)+' focused hours recorded';if(s.running&&elapsed>=s.target*60){pauseFocus();document.getElementById('focusStatus').textContent='Target reached. Great work — take a short break.';}}
-function startFocus(){let s=focusState();if(!s.running){s.label=document.getElementById('focusLabel').value.trim()||'Focused study';s.target=Math.max(1,Math.min(240,Number(document.getElementById('focusTarget').value)||50));s.startedAt=Date.now();s.running=true;put('focusState',s);if(focusTick)clearInterval(focusTick);focusTick=setInterval(paintFocus,1000);paintFocus()}}
+function startFocus(){let s=focusState();if(!s.running){s.label=document.getElementById('focusLabel').value.trim()||'Focused study';s.target=Math.max(1,Math.min(240,Number(document.getElementById('focusTarget').value)||50));s.startedAt=Date.now();s.elapsed=0;s.running=true;put('focusSettings',{label:s.label,target:s.target});put('focusState',s);if(focusTick)clearInterval(focusTick);focusTick=setInterval(paintFocus,1000);paintFocus()}}
 function pauseFocus(){let s=focusState();if(s.running){s.elapsed=focusElapsed(s);s.running=false;s.startedAt=0;if(s.elapsed>=60){let a=get('focusSessions',[]);a.unshift({date:today(),label:s.label,seconds:s.elapsed});put('focusSessions',a)}put('focusState',s);if(focusTick){clearInterval(focusTick);focusTick=null}paintFocus();renderHomeProductivity()}}
 function exitFocusShield(){pauseFocus()}
-function resetFocus(){pauseFocus();put('focusState',{running:false,startedAt:0,elapsed:0,label:'',target:50});document.getElementById('focusLabel').value='';paintFocus()}
+function resetFocus(){pauseFocus();put('focusState',{running:false,startedAt:0,elapsed:0,label:'',target:50});put('focusSettings',{label:'',target:50});document.getElementById('focusLabel').value='';document.getElementById('focusTarget').value=50;paintFocus()}
 function saveMistake(){let subject=document.getElementById('mistakeSubject').value.trim(),topic=document.getElementById('mistakeTopic').value.trim(),why=document.getElementById('mistakeWhy').value.trim(),fix=document.getElementById('mistakeFix').value.trim();if(!subject||!topic||!why){alert('Please add subject, topic and what went wrong.');return}let a=get('mistakes',[]);a.unshift({id:Date.now(),date:today(),subject,topic,why,fix,done:false});put('mistakes',a);['mistakeSubject','mistakeTopic','mistakeWhy','mistakeFix'].forEach(id=>document.getElementById(id).value='');renderMistakes()}
 function toggleMistake(id,on){let a=get('mistakes',[]);a=a.map(x=>x.id===id?{...x,done:on}:x);put('mistakes',a);renderMistakes()}
 function deleteMistake(id){put('mistakes',get('mistakes',[]).filter(x=>x.id!==id));renderMistakes()}
@@ -626,6 +650,7 @@ function refreshForLocalDate(force=false){
   document.getElementById("planDate").value=current;
   document.getElementById("routineDate").value=current;
   ensureCarryovers();
+  loadDailyTools();
   renderDaily();
   renderAll();
  }
@@ -641,10 +666,21 @@ function refreshForLocalDate(force=false){
   document.getElementById("planDate").value=current;
   document.getElementById("routineDate").value=current;
   ensureCarryovers();
+  loadDailyTools();
   renderDaily();
   renderAll();
  }
 }
+// Auto-save priorities and active-recall notes on every edit; no separate Save tap is required.
+['priority1','priority2','priority3','recallScore','recallNotes'].forEach(id=>{
+ const el=document.getElementById(id);if(el){el.addEventListener('input',saveDailyTools);el.addEventListener('change',saveDailyTools);}
+});
+// Restore today's priorities, focus settings, the last open section and any running focus session.
+loadDailyTools();
+const focusPrefs=get('focusSettings',{label:'',target:50});document.getElementById('focusLabel').value=focusPrefs.label||'';document.getElementById('focusTarget').value=focusPrefs.target||50;
+['focusLabel','focusTarget'].forEach(id=>{const el=document.getElementById(id);if(el){el.addEventListener('input',()=>put('focusSettings',{label:document.getElementById('focusLabel').value,target:Number(document.getElementById('focusTarget').value)||50}));}});
+const rememberedTab=get('activeTab','dashboard');switchTab(rememberedTab);
+try{paintFocus();const fs=focusState();if(fs.running){if(focusTick)clearInterval(focusTick);focusTick=setInterval(paintFocus,1000);}}catch(e){console.warn('Focus timer restore skipped',e)}
 document.getElementById("scoreDate").value=today();document.getElementById("pyqDate").value=today();document.getElementById("answerDate").value=today();
 try{renderDaily()}catch(e){console.error("Daily routine checklist render failed",e);document.getElementById("dailyList").innerHTML="<p class=muted>Daily checklist could not load. Reload the page.</p>"}
 // Render the checklists before the broader dashboard initialization. This keeps

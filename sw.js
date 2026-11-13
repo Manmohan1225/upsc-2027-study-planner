@@ -1,4 +1,4 @@
-const CACHE="upsc-2027-planner-v30-progress-roadmap";
+const CACHE="upsc-2027-planner-v32-persistent-progress";
 const FILES=["./","./index.html","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(a=>Promise.all(a.filter(x=>x.startsWith("upsc-2027-planner-")&&x!==CACHE).map(x=>caches.delete(x)))));self.clients.claim()});
