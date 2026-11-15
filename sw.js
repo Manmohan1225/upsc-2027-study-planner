@@ -1,4 +1,4 @@
-const CACHE="upsc-2027-planner-v40-evening-hours-count-backlog-separate";
+const CACHE="upsc-2027-planner-v41-month-ahead-revision-list";
 const FILES=["./","./index.html"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(a=>Promise.all(a.filter(x=>x.startsWith("upsc-2027-planner-")&&x!==CACHE).map(x=>caches.delete(x)))));self.clients.claim()});
